@@ -1,11 +1,10 @@
 // app/page.js
 "use client"
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
 import InputForm from '../components/InputForm';
 import NFTCard from '../components/NFTCard';
 import Metamask from '../components/Metamask';
-import NFTContractFactory from '../artifacts/contracts/NFTContractFactory.sol/NFTContractFactory.json';  // Adjust the path as necessary
+import NFTContractFactory from '../artifacts/contracts/NFTContractFactory.sol/NFTContractFactory.json';
 
 export default function Home() {
     const [nfts, setNfts] = useState([]);
@@ -13,17 +12,18 @@ export default function Home() {
 
     useEffect(() => {
         if (typeof window !== "undefined" && window.ethereum) {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            const nftContract = new ethers.Contract(
-                '0x5FbDB2315678afecb367f032d93F642f64180aa3',  // Replace with actual contract address
-                NFTContractFactory.abi,
-                signer
-            );
-            setContract(nftContract);
+            import('ethers').then(({ ethers }) => {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const nftContract = new ethers.Contract(
+                    '0x5FbDB2315678afecb367f032d93F642f64180aa3',  // Replace with actual contract address
+                    NFTContractFactory.abi,
+                    signer
+                );
+                setContract(nftContract);
+            });
         }
     }, []);
-    
 
     const handleNewNFT = (ipfsAddress) => {
         const newNft = {
